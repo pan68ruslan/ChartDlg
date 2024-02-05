@@ -22,9 +22,9 @@ private:
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     std::vector<ChartImage*> images;
     bool GetMinMax();
-    void DrawCoordinates();
-    void DrawLabels();
-    void DrawText(const WCHAR*, size_t, double, double, Gdiplus::StringAlignment);
+    void DrawCoordinates(Gdiplus::Graphics*);
+    void DrawLabels(Gdiplus::Graphics*);
+    void DrawText(Gdiplus::Graphics*, const WCHAR*, size_t, double, double, Gdiplus::StringAlignment);
 public:
     ChartDlg();
     ~ChartDlg();
@@ -45,8 +45,8 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 public:
-    Gdiplus::Graphics* pGr;
-    int bgnX, bgnY, wight, height, amountX, amountY;
+    //Gdiplus::Graphics* pGr;
+    int bgnX, bgnY, wight, height, amount;
     double x0, y0, gapX, gapY, minValueX, maxValueX, minValueY, maxValueY, kX, kY, rangeX, rangeY;
 
     ChartImage* CreateImage();

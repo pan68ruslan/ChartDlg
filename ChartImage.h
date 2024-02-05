@@ -21,8 +21,8 @@ public:
     void AddValue(double, double);
     void ClearValues();
     void InitImage(Color, double);
-    void DrawImage();
-    void DrawImageXY();
+    void DrawImage(Gdiplus::Graphics*);
+    void DrawImageXY(Gdiplus::Graphics*);
 };
 
 

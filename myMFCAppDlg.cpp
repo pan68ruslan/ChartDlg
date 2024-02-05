@@ -98,7 +98,7 @@ BOOL CmyMFCAppDlg::OnInitDialog()
 	for (int i = 0; i <= 18; i++)
 	{
 		if (i < 10)
-			redImage->AddValue(1.5 * i, 5.0 * i - 50);
+			redImage->AddValue(1.5 * i, 5.0 * i - 60);
 		else if (i < 15)
 			redImage->AddValue(1.5 * i, 20.0 * i - 50);
 		else

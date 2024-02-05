@@ -5,8 +5,8 @@ ChartImage::ChartImage(ChartDlg *chart)
 {
     pChartDlg = chart;
     color = Color(255, 0, 0, 0);
-    Pen p(Color(255, 0, 0, 0), 1.0);
-    imgPen = &p;//Gdiplus::Pen(Color(255, 0, 0, 0), 1.0);
+    /*Pen p(Color(255, 0, 0, 0), 1.0);
+    imgPen = &p;//Gdiplus::Pen(Color(255, 0, 0, 0), 1.0);*/
     shiftX = 0.0f;
     shiftY = 0.0f;
     scale = 1.0f;
@@ -57,13 +57,13 @@ void ChartImage::InitImage(Color c, double w)
 {
     color = c;
     width = w;
-    imgPen->SetColor(c);
-    imgPen->SetWidth(w);
-    imgPen->SetAlignment(PenAlignmentCenter);
-    imgPen->SetEndCap(LineCapRoundAnchor);
+    //imgPen->SetColor(c);
+    //imgPen->SetWidth(w);
+    //imgPen->SetAlignment(PenAlignmentCenter);
+    //imgPen->SetEndCap(LineCapRoundAnchor);
 }
 
-void ChartImage::DrawImage()
+void ChartImage::DrawImage(Gdiplus::Graphics* g)
 {
     Pen pen(color, width);
     pen.SetAlignment(PenAlignmentCenter);
@@ -75,13 +75,13 @@ void ChartImage::DrawImage()
     {
         p1 = new PointF(x, pChartDlg->y0 - v * pChartDlg->kY);
         if (p0 != NULL)
-            pChartDlg->pGr->DrawLine(&pen, *p0, *p1);
+            g->DrawLine(&pen, *p0, *p1);
         p0 = new PointF(*p1);
         x += pChartDlg->kX;
     }
 }
 
-void ChartImage::DrawImageXY()
+void ChartImage::DrawImageXY(Gdiplus::Graphics* g)
 {
     Pen pen(color, width);
     pen.SetAlignment(PenAlignmentCenter);
@@ -89,12 +89,12 @@ void ChartImage::DrawImageXY()
     double x = pChartDlg->x0;
     PointF* p1 = NULL;
     PointF* p0 = NULL;
-    for (double v : valuesY)
+    for (int i = 0; i < pChartDlg->amount; i++)
     {
-        p1 = new PointF(x, pChartDlg->y0 - v * pChartDlg->kY);
+        p1 = new PointF(pChartDlg->x0 + valuesX[i] * pChartDlg->kX, pChartDlg->y0 - valuesY[i] * pChartDlg->kY);
         if (p0 != NULL)
-            pChartDlg->pGr->DrawLine(&pen, *p0, *p1);
+            g->DrawLine(&pen, *p0, *p1);
         p0 = new PointF(*p1);
-        x += pChartDlg->kX;
+        //x += pChartDlg->kX;
     }
 }
