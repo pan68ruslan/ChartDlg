@@ -1,0 +1,9 @@
+﻿  ChartImage.cpp
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(61,22): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(68,20): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(76,42): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(76,25): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(86,20): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(94,42): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+C:\Users\Руслан\Documents\GitHub\ChartDlg\ChartImage.cpp(94,25): warning C4244: 'argument': conversion from 'double' to 'Gdiplus::REAL', possible loss of data
+  myMFCApp.vcxproj -> C:\Users\Руслан\Documents\GitHub\ChartDlg\x64\Debug\myMFCApp.exe
