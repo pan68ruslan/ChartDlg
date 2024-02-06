@@ -98,13 +98,13 @@ BOOL CmyMFCAppDlg::OnInitDialog()
 	for (int i = 0; i <= 18; i++)
 	{
 		if (i < 10)
-			redImage->AddValue(1.5 * i, 5.0 * i - 60);
+			redImage->AddValue(1.5 * i - 5, 5.0 * i - 60);
 		else if (i < 15)
-			redImage->AddValue(1.5 * i, 20.0 * i - 50);
+			redImage->AddValue(1.5 * i - 5, 20.0 * i - 50);
 		else
-			redImage->AddValue(1.5 * i, 10.0 * (5 - i) - 50);
+			redImage->AddValue(1.5 * i - 5, 10.0 * (5 - i) - 50);
 	}
-	ChartImage* greenImage = dlgChart.CreateImage();
+	/*ChartImage* greenImage = dlgChart.CreateImage();
 	greenImage->InitImage(Color(255, 0, 255, 0), 2.5);// green
 	for (int i = 0; i <= 15; i++)
 	{
@@ -135,7 +135,7 @@ BOOL CmyMFCAppDlg::OnInitDialog()
 			blueImage->AddValue(0.5 * i, 10.0 * i + 10);
 		else
 			blueImage->AddValue(0.5 * i, 12.0 * (7 - i));
-	}
+	}*/
 	ShowWindow(SW_NORMAL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

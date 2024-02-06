@@ -46,7 +46,7 @@ protected:
 
 public:
     //Gdiplus::Graphics* pGr;
-    int bgnX, bgnY, wight, height, amount;
+    int bgnX, bgnY, wight, height, amountX, amountY;
     double x0, y0, gapX, gapY, minValueX, maxValueX, minValueY, maxValueY, kX, kY, rangeX, rangeY;
 
     ChartImage* CreateImage();

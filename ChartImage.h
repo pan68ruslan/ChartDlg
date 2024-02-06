@@ -14,7 +14,7 @@ public:
     ~ChartImage();
 
     Color color;
-    double width, minValueX, maxValueX, minValueY, maxValueY, scale, shiftX, shiftY;
+    double width, minX, maxX, minY, maxY, scale, shiftX, shiftY;
     std::vector<double> valuesX, valuesY;
 
     void AddValue(double);

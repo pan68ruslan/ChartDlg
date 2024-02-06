@@ -63,117 +63,96 @@ BOOL ChartDlg::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd)
 
 bool ChartDlg::GetMinMax()
 {
-    bool ret = images.size() > 0;
-    int amountX, amountY;
-    if (ret)
+    if (images.size() <= 0)
+        return false;
+    amountX = images[0]->valuesX.size();
+    minValueX = images[0]->minX;
+    maxValueX = images[0]->maxX;
+    amountY = images[0]->valuesY.size();
+    minValueY = images[0]->minY;
+    maxValueY = images[0]->maxY;
+    for (ChartImage* img : images)
     {
-        ret = false;
-        if (images[0]->valuesX.size() > 0)
-        {
-            minValueX = images[0]->minValueX;
-            maxValueX = images[0]->maxValueX;
-            amountX = images[0]->valuesX.size();
-            for (ChartImage* img : images)
-            {
-                if (minValueX > img->minValueX)
-                    minValueX = img->minValueX;
-                if (maxValueX < img->maxValueX)
-                    maxValueX = img->maxValueX;
-                if (amountX < img->valuesX.size())
-                    amountX = img->valuesX.size();
-            }
-            rangeX = 0.0;
-            if (maxValueX > 0.0 && minValueX < 0.0 || maxValueX < 0.0 && minValueX > 0.0)
-                rangeX = abs(maxValueX - minValueX);
-            else if (maxValueX != minValueX)
-                rangeX = abs(maxValueX) + abs(minValueX);
-            kX = rangeX > 0.0 ? float(height - 2 * gapX) / rangeX : 10.0;
-            ret = true;
-        }
-        if (images[0]->valuesY.size() > 0) 
-        {
-            minValueY = images[0]->minValueY;
-            maxValueY = images[0]->maxValueY;
-            amountY = images[0]->valuesY.size();
-            for (ChartImage* img : images)
-            {
-                if (minValueY > img->minValueY)
-                    minValueY = img->minValueY;
-                if (maxValueY < img->maxValueY)
-                    maxValueY = img->maxValueY;
-                if (amountY < img->valuesY.size())
-                    amountY = img->valuesY.size();
-            }
-            rangeY = 0.0;
-            if (maxValueY > 0.0 && minValueY < 0.0 || maxValueY < 0.0 && minValueY > 0.0)
-                rangeY = abs(maxValueY - minValueY);
-            else if (maxValueY != minValueY)
-                rangeY = abs(maxValueY) + abs(minValueY);
-            kY = rangeY > 0.0 ? float(height - 2 * gapY) / rangeY : 10.0;
-            ret = true;
-        }
+        if (amountX < img->valuesX.size())
+            amountX = img->valuesX.size();
+        if (minValueX > img->minX)
+            minValueX = img->minX;
+        if (maxValueX < img->maxX)
+            maxValueX = img->maxX;
+        if (amountY < img->valuesY.size())
+            amountY = img->valuesY.size();
+        if (minValueY > img->minY)
+            minValueY = img->minY;
+        if (maxValueY < img->maxY)
+            maxValueY = img->maxY;
     }
-    if (amountX == amountY)
-        amount = amountX;
+    rangeX = 0.0;
+    if (maxValueX > 0.0 && minValueX < 0.0 || maxValueX < 0.0 && minValueX > 0.0)
+        rangeX = abs(maxValueX - minValueX);
     else
-        amount = (amountX < amountY) ? amountX : amountY;
-    //amount--;
-    return ret;
+        rangeX = abs(maxValueX) + abs(minValueX);
+    kX = rangeX > 0.0 ? double(wight - 2 * gapX) / rangeX : 10.0;
+    x0 = bgnX + gapX - minValueX * kX;
+    rangeY = 0.0;
+    if (maxValueY > 0.0 && minValueY < 0.0 || maxValueY < 0.0 && minValueY > 0.0)
+        rangeY = abs(maxValueY - minValueY);
+    else
+        rangeY = abs(maxValueY) + abs(minValueY);
+    kY = rangeY > 0.0 ? double(height - 2 * gapY) / rangeY : 10.0;
+    y0 = bgnY + gapY + maxValueY * kY;
+    return true;
 }
 
 void ChartDlg::DrawCoordinates(Gdiplus::Graphics* g)
 {
-    if (!GetMinMax())
-        return;
-    kX = double(bgnX + wight - 2 * gapX) / amount;
-    x0 = bgnX + gapX;
-    y0 = bgnY + gapY + maxValueY * kY;
+    Pen bluePen(Color(255, 180, 0, 180));
     Pen grayPen(Color(255, 180, 180, 180));
     g->DrawRectangle(&grayPen, bgnX, bgnY, wight, height);
-    PointF* p0, * p1;
-    double x = x0, y = bgnY;
-    for (int i = 0; i < amount; i++) // x,x,x
+    PointF p0, p1;
+    double stepX = double(bgnX + wight - 2 * gapX) / amountX;
+    double x = bgnX + gapX, y = bgnY;
+    for (double dV = stepX; dV < rangeX; dV += stepX) // x,x,x
     {
-        x += kX;
-        p0 = new PointF(x, y + gapY);
-        p1 = new PointF(x, y + height);
-        g->DrawLine(&grayPen, *p0, *p1);
+        double dX = x0 - dV;
+        p0 = PointF(x, y + gapY);
+        p1 = PointF(x, y + height);
+        g->DrawLine(&bluePen, p0, p1);
     }
-    int step = 10 * int(rangeY / 100);
-    for (double i = step; i < rangeY; i += step)//y,y,y
+    int stepY = 10 * int(rangeY / 100);
+    for (double dV = stepY; dV < rangeY; dV += stepY)//y,y,y
     {
-        double dY = y0 - i;
+        double dY = y0 - dV;
         if (dY > bgnY)
         {
-            p0 = new PointF(x0 + amount * kX, dY);
-            p1 = new PointF(x0, dY);
-            g->DrawLine(&grayPen, *p0, *p1);
+            p0 = PointF(bgnX + wight, dY);
+            p1 = PointF(bgnX, dY);
+            g->DrawLine(&grayPen, p0, p1);
         }
-        dY = y0 + i;
+        dY = y0 + dV;
         if (dY < bgnY + height)
         {
-            p0 = new PointF(x0 + amount * kX, dY);
-            p1 = new PointF(x0, dY);
-            g->DrawLine(&grayPen, *p0, *p1);
+            p0 = PointF(bgnX + wight, dY);
+            p1 = PointF(bgnX, dY);
+            g->DrawLine(&grayPen, p0, p1);
         }
     }
-    x = x0 + wight - gapX;
-    y = bgnY;
     Pen blackPen(Color(255, 0, 0, 0));
-    p0 = new PointF(x0, y);
-    p1 = new PointF(x0, bgnY + height);
-    g->DrawLine(&blackPen, *p0, *p1); // y
-    p1 = new PointF(x0 - 5, y + 10);
-    g->DrawLine(&blackPen, *p0, *p1);
-    p1 = new PointF(x0 + 5, y + 10);
-    g->DrawLine(&blackPen, *p0, *p1);
-    p0 = new PointF(x, y0);
-    p1 = new PointF(x0, y0);
-    g->DrawLine(&blackPen, *p0, *p1); // x
-    p1 = new PointF(x - 10, y0 - 5);
-    g->DrawLine(&blackPen, *p0, *p1);
-    p1 = new PointF(x - 10, y0 + 5);
-    g->DrawLine(&blackPen, *p0, *p1);
+    x = bgnX + wight;
+    y = bgnY;
+    p0 = PointF(bgnX, y0);
+    p1 = PointF(x, y0);
+    g->DrawLine(&blackPen, p0, p1); // x
+    p0 = PointF(x - 10, y0 - 5);
+    g->DrawLine(&blackPen, p0, p1);
+    p0 = PointF(x - 10, y0 + 5);
+    g->DrawLine(&blackPen, p0, p1);
+    p0 = PointF(x0, y);
+    p1 = PointF(x0, bgnY + height);
+    g->DrawLine(&blackPen, p0, p1); // y
+    p1 = PointF(x0 - 5, y + 10);
+    g->DrawLine(&blackPen, p0, p1);
+    p1 = PointF(x0 + 5, y + 10);
+    g->DrawLine(&blackPen, p0, p1);
 }
 
 void ChartDlg::DrawText(Gdiplus::Graphics* g, const WCHAR* s, size_t l, double x, double y, Gdiplus::StringAlignment aligment = Gdiplus::StringAlignmentNear)
@@ -196,7 +175,7 @@ void ChartDlg::DrawLabels(Gdiplus::Graphics* g)
     SolidBrush  blackBrush(Color(255, 0, 0, 0));
     WCHAR str[10];
     double x = x0 - 10;
-    for (int i = 0; i <= amount; i++)
+    for (int i = 0; i < amountX; i++)
     {
         swprintf_s(str, 10, L"%d", i);
         DrawText(g, str, wcslen(str), x, y0);
@@ -214,7 +193,7 @@ void ChartDlg::DrawLabels(Gdiplus::Graphics* g)
             DrawText(g, str, wcslen(str), x, dY, Gdiplus::StringAlignmentFar);
         }
         dY = y + i;
-        if (dY < bgnY + height)
+        if (dY < bgnY + height - gapY)
         {
             swprintf_s(str, 10, L"%5.1f", -1 * i);
             DrawText(g, str, wcslen(str), x, dY, Gdiplus::StringAlignmentFar);
@@ -241,13 +220,15 @@ ChartImage* ChartDlg::CreateImage()
 
 void ChartDlg::DrawImages()
 {
+    if (!GetMinMax())
+        return;
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
     HWND hwnd = GetSafeHwnd();
     Gdiplus::Graphics g(hwnd);
     DrawCoordinates(&g);
     for (ChartImage* img : images)
-        img->DrawImage(&g);
-        //img->DrawImageXY();
+        //img->DrawImage(&g);
+        img->DrawImageXY(&g);
     DrawLabels(&g);
 }
 
