@@ -171,31 +171,34 @@ void ChartDlg::DrawText(Gdiplus::Graphics* g, const WCHAR* s, size_t l, double x
 
 void ChartDlg::DrawLabels(Gdiplus::Graphics* g)
 {
-    PointF      pointF(bgnX, bgnY);
     SolidBrush  blackBrush(Color(255, 0, 0, 0));
     WCHAR str[10];
+    double step = 10.0 * int(rangeX / 100);
     double x = x0 - 10;
-    for (int i = 0; i < amountX; i++)
+    for (double dS = step; dS < rangeX; dS += step)
     {
-        swprintf_s(str, 10, L"%d", i);
-        DrawText(g, str, wcslen(str), x, y0);
-        x += kX;
+        double dX = x - dS;
+        if (dX > bgnX + gapX)
+        {
+            swprintf_s(str, 10, L"%d", dS);// x
+            DrawText(g, str, wcslen(str), dX, y0);
+        }
     }
-    x = bgnX + 18;
-    double y = y0 - 6;
-    double step = 10.0f * int(rangeY / 100);
-    for (double i = step; i < rangeY; i += step)
+    x = x0 - 50;
+    double y = y0 - 5;
+    step = 10.0 * int(rangeY / 100);
+    for (double dS = step; dS < rangeY; dS += step)// y
     {
-        double dY = y - i;
+        double dY = y - dS;
         if (dY > bgnY + gapY)
         {
-            swprintf_s(str, 10, L"%5.1f", i);
+            swprintf_s(str, 10, L"%5.1f", dS);
             DrawText(g, str, wcslen(str), x, dY, Gdiplus::StringAlignmentFar);
         }
-        dY = y + i;
+        dY = y + dS;
         if (dY < bgnY + height - gapY)
         {
-            swprintf_s(str, 10, L"%5.1f", -1 * i);
+            swprintf_s(str, 10, L"%5.1f", -1 * dS);
             DrawText(g, str, wcslen(str), x, dY, Gdiplus::StringAlignmentFar);
         }
     }

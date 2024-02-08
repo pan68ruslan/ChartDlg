@@ -7,7 +7,7 @@ class ChartImage
 {
 private:
     ChartDlg* pChartDlg;
-    Pen* imgPen;
+    //Pen* imgPen;
 
 public:
     ChartImage(ChartDlg *);
